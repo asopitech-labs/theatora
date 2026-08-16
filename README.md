@@ -1,233 +1,98 @@
 # Theatora
 
-**Build a theatre for your application.**
+**Change the theatre. Keep the code.**
 
-Theatora is a composable kit for building application backends from interchangeable capabilities, modules, providers, and runtimes.
+Theatora is a composable kit for building your own application backend from capabilities, modules, providers, bindings, and runtimes.
 
-An application is a performance. Its user-facing experience is the stage. Behind it is a theatre: identity, data, storage, messaging, compute, workflows, realtime communication, policies, observability, and the infrastructure that keeps everything running.
+An application can begin on one laptop and grow into a distributed system. Theatora keeps application code coupled to capability contracts instead of a particular database, queue, object store, or execution environment.
 
-Theatora gives you the pieces and conventions to build that theatre yourself.
+- [Explore the landing page](https://asopitech-labs.github.io/theatora/)
+- [View the repository](https://github.com/asopitech-labs/theatora)
 
-## What is Theatora?
+> Theatora is an early-stage open-source project. The model and interfaces are being shaped in public.
 
-Theatora is not a preassembled backend service.
+## Why Theatora?
 
-It is a framework for **describing, composing, implementing, and deploying backend systems**.
+A performance may move from a small theatre to a much larger venue without changing the performance itself. Application backends should be able to evolve in the same way.
 
-Instead of starting with a particular cloud service, database, runtime, or deployment model, you describe what the application needs:
-
-```text
-Application
-    │
-    ▼
-Backend Definition
-    │
-    ├── Capabilities
-    ├── Domain Modules
-    ├── Bindings
-    ├── Providers
-    └── Runtimes
-```
-
-The resulting backend may run as a local process, containers, cloud services, edge functions, distributed infrastructure, or a combination of them.
-
-## The Theatre Metaphor
-
-A performance needs more than a stage.
-
-# Theatora
-
-**Build a theatre for your application.**
-
-Theatora is a composable kit for building application backends from interchangeable capabilities, modules, providers, and runtimes.
-
-An application is a performance. Its user-facing experience is the stage. Behind it is a theatre: identity, data, storage, messaging, compute, workflows, realtime communication, policies, observability, and the infrastructure that keeps everything running.
-
-Theatora gives you the pieces and conventions to build that theatre yourself.
-
-## What is Theatora?
-
-Theatora is not a preassembled backend service.
-
-It is a framework for **describing, composing, implementing, and deploying backend systems**.
-
-Instead of starting with a particular cloud service, database, runtime, or deployment model, you describe what the application needs:
+Theatora separates four concerns:
 
 ```text
-Application
-    │
-    ▼
-Backend Definition
-    │
-    ├── Capabilities
-    ├── Domain Modules
-    ├── Bindings
-    ├── Providers
-    └── Runtimes
+Modules           reusable backend behavior
+Capabilities      contracts describing what the application needs
+Bindings          connections from contracts to implementations
+Providers         concrete databases, queues, object stores, and services
+Runtimes          local, container, serverless, edge, cluster, or mixed execution
 ```
 
-The resulting backend may run as a local process, containers, cloud services, edge functions, distributed infrastructure, or a combination of them.
+Applications depend on capabilities. A backend definition selects the implementations and runtimes appropriate for the current stage.
 
-## The Theatre Metaphor
+## Follow and participate
 
-A performance needs more than a stage.
+- **Star** — [save Theatora on GitHub](https://github.com/asopitech-labs/theatora)
+- **Watch** — [follow repository activity](https://github.com/asopitech-labs/theatora/subscription)
+- **Share** — send the [landing page](https://asopitech-labs.github.io/theatora/) to someone designing a backend that needs room to grow
+- **Discuss** — [bring a use case, provider, runtime, or migration question](https://github.com/asopitech-labs/theatora/discussions)
+- **Request or report** — [open a feature request or bug report](https://github.com/asopitech-labs/theatora/issues/new/choose)
 
-Different performances require different combinations of them.
+Concrete applications are especially useful: what capabilities do they need, which providers do they use today, where should the work run, and what would make migration risky?
 
-## Core Model
-
-### Capabilities
-
-A capability describes **what an application needs**, independently of a particular implementation.
-
-Examples include:
-
-```text
-Identity
-RelationalStore
-KeyValueStore
-ObjectStore
-Cache
-Queue
-EventBus
-Realtime
-Compute
-Scheduler
-Workflow
-Secrets
-Configuration
-Observability
-```
-
-Capabilities establish contracts between applications, modules, and implementations.
-
-### Providers
-
-A provider supplies an implementation of one or more capabilities.
-
-For example:
-
-```text
-RelationalStore
-    ├── SQLite
-    ├── PostgreSQL
-    └── other providers
-
-ObjectStore
-    ├── local filesystem
-    ├── S3-compatible storage
-    └── cloud object storage
-
-Queue
-    ├── local implementation
-    ├── NATS
-    └── cloud queue services
-```
-
-Applications should depend on the capability they require rather than unnecessarily coupling themselves to a provider.
-
-### Bindings
-
-Bindings connect capabilities to their actual providers.
-
-Conceptually:
-
-```yaml
-bindings:
-  users:
-    capability: relational
-    provider: postgres
-
-  cache:
-    capability: kv
-    provider: redis
-
-  assets:
-    capability: object
-    provider: s3
-
-  events:
-    capability: queue
-    provider: nats
-```
-
-The exact configuration format and interfaces are part of Theatora's specification and tooling.
+## Core model
 
 ### Modules
 
-Modules package reusable backend behavior.
+Modules package reusable backend behavior such as authentication, organizations, billing, notifications, inventories, leaderboards, lobbies, and matchmaking. A module can consume several capabilities while exposing higher-level application behavior.
 
-A module can consume capabilities while exposing higher-level application functionality.
+### Capabilities
+
+A capability describes **what the application needs**, independently of a specific implementation.
 
 Examples include:
 
 ```text
-Authentication
-Organizations
-Notifications
-Audit Log
-Billing
-Asset Library
-
-Cloud Save
-Inventory
-Economy
-Leaderboard
-Lobby
-Matchmaking
+Identity          RelationalStore   ObjectStore
+Queue             Realtime          Compute
+Workflow          Observability     Secrets
 ```
 
-This creates a hierarchy such as:
+### Bindings and providers
+
+Providers implement capabilities. Bindings select which implementation supplies each capability.
 
 ```text
-Provider
-    ↓
-Capability
-    ↓
-Module
-    ↓
-Application Backend
+RelationalStore  → PostgreSQL or AlopexDB
+ObjectStore      → local filesystem or S3-compatible storage
+Queue            → local queue or NATS
 ```
 
-A leaderboard, for example, is not merely a database table. It is backend behavior that may use storage, caching, events, authorization, and other capabilities.
+The application should depend on `RelationalStore`, not on PostgreSQL-specific calls, when the capability contract is sufficient.
 
 ### Runtimes
 
-Backend logic is not inherently tied to one execution environment.
-
-Theatora's model accommodates runtimes such as:
+Backend work can run where it belongs:
 
 ```text
-local processes
-native executables
-containers
-WASM
-serverless functions
-edge runtimes
-clusters
-cloud infrastructure
+local process · native executable · container · WASM
+serverless · edge · cluster · cloud infrastructure
 ```
 
-Providers and runtimes can therefore evolve independently where their capability contracts permit it.
+Provider composition and runtime topology are related, but they are not the same decision.
 
-## Backend Definition
+## Backend definition
 
-A Theatora backend can be described declaratively.
-
-Conceptually:
+A composition can be described declaratively:
 
 ```yaml
 name: example-app
 
 modules:
   - identity
-  - users
   - notifications
 
 bindings:
   database:
     capability: relational
-    provider: postgres
+    provider: alopexdb
 
   objects:
     capability: object
@@ -241,449 +106,48 @@ runtime:
   provider: container
 ```
 
-The definition represents the **desired composition of the backend**, rather than merely a list of infrastructure resources.
-
-Tooling can use this definition for operations such as:
-
-```text
-create
-compose
-validate
-inspect
-diff
-deploy
-migrate
-upgrade
-```
-
-## Domain Backends
-
-Theatora's composition model is not restricted to conventional web applications.
-
-### Web and SaaS
-
-```text
-Identity
-Organization
-Database
-Object Storage
-Jobs
-Email
-Webhooks
-Billing
-Audit
-```
+The definition represents the desired application backend, not merely a list of infrastructure resources.
 
-### Realtime Applications
+## From one laptop to a distributed system
 
-```text
-Identity
-Realtime
-Presence
-Synchronization
-Coordination
-Events
-Queues
-Object Storage
-```
+Theatora aims to let the application keep the same capability-facing code as its backend composition and execution topology evolve.
 
-### Games
+A conventional growth path may replace several implementations:
 
-```text
-Player Identity
-Cloud Save
-Inventory
-Economy
-Leaderboard
-Lobby
-Matchmaking
-Game Sessions
-LiveOps
-```
+| Capability | One laptop | Production |
+| --- | --- | --- |
+| Relational data | SQLite | PostgreSQL |
+| Objects | Local filesystem | S3-compatible storage |
+| Queue | In-process queue | NATS |
+| Compute | Local process | Containers |
 
-### Edge Applications
+Changing the composition does **not** by itself move persisted data. Replacing SQLite with PostgreSQL, for example, still requires a data migration plan.
 
-```text
-Routing
-Edge Compute
-KV
-Object Storage
-Cache
-Queues
-Configuration
-Coordination
-Workflows
-```
+AlopexDB is the preferred relational path when the goal is to preserve the data layer while changing topology:
 
-These are different backend compositions built from the same underlying model.
+| Stage | Relational provider | Data transition |
+| --- | --- | --- |
+| One laptop | AlopexDB embedded/local | Start with the production data model |
+| Production | AlopexDB durable/managed topology | Reconfigure or expand the topology |
+| Distributed | AlopexDB distributed topology | Scale the same data system |
 
-## Local and Distributed Systems
+The intended advantage is not that migration disappears by definition. It is that staying within AlopexDB can avoid a cross-database engine migration as the audience grows. Any topology change still needs operational planning, validation, backup, and a rollout strategy.
 
-The logical backend and its physical deployment are separate concerns.
+## Application backends
 
-A capability may be implemented differently depending on the environment:
+The same model can describe different backend compositions:
 
-```text
-Development
+- **Web and SaaS** — identity, organizations, relational data, objects, jobs, email, webhooks, billing, audit
+- **Realtime applications** — identity, presence, synchronization, coordination, events, queues, objects
+- **Games** — player identity, cloud save, inventory, economy, leaderboards, lobbies, matchmaking, sessions, LiveOps
+- **Edge applications** — routing, edge compute, key-value data, objects, caches, queues, configuration, workflows
 
-RelationalStore → SQLite
-ObjectStore     → local filesystem
-Queue           → local queue
-Compute         → local process
-```
+## Project direction
 
-and elsewhere:
+Theatora is designed around extension points for new capabilities, providers, domain modules, runtimes, lifecycle hooks, policies, and deployment integrations.
 
-```text
-Production
+The current priority is to test the composition model against real backend requirements before locking down interfaces. Join the [first use-case discussion](https://github.com/asopitech-labs/theatora/discussions) or open an [issue](https://github.com/asopitech-labs/theatora/issues/new/choose).
 
-RelationalStore → PostgreSQL
-ObjectStore     → S3-compatible storage
-Queue           → NATS
-Compute         → containers
-```
+## License
 
-More complex deployments can introduce replication, clustering, edge execution, managed services, or other infrastructure without redefining the application's backend solely in infrastructure terms.
-
-## Extensibility
-
-Theatora is designed around extension points rather than a closed catalogue of services.
-
-The model provides places for:
-
-* new capabilities
-* new providers
-* new domain modules
-* new runtimes
-* lifecycle hooks
-* configuration
-* policies
-* deployment integrations
-
-The ecosystem can therefore grow horizontally without requiring every backend capability to be implemented by the Theatora project itself.
-
-## The Idea
-
-Software development has accumulated excellent databases, object stores, queues, identity systems, runtimes, cloud services, edge platforms, and domain-specific backend components.
-
-The difficult part is often not the absence of these pieces.
-
-It is turning them into **one coherent backend for a particular application**.
-
-Theatora provides the theatre in which those pieces can work together.
-
-**Your application is the performance. Build the theatre it needs.**
-
-Different performances require different combinations of them.
-
-Application backends have the same property.
-
-A web application might need identity, relational data, object storage, background jobs, and email.
-
-A realtime application might add presence, synchronization, queues, and coordination.
-
-A game might require player identity, cloud saves, inventories, leaderboards, matchmaking, sessions, and LiveOps.
-
-There is no single backend configuration that represents all of these systems.
-
-Theatora treats the backend as something to **compose for the application that uses it**.
-
-## Core Model
-
-### Capabilities
-
-A capability describes **what an application needs**, independently of a particular implementation.
-
-Examples include:
-
-```text
-Identity
-RelationalStore
-KeyValueStore
-ObjectStore
-Cache
-Queue
-EventBus
-Realtime
-Compute
-Scheduler
-Workflow
-Secrets
-Configuration
-Observability
-```
-
-Capabilities establish contracts between applications, modules, and implementations.
-
-### Providers
-
-A provider supplies an implementation of one or more capabilities.
-
-For example:
-
-```text
-RelationalStore
-    ├── SQLite
-    ├── PostgreSQL
-    └── other providers
-
-ObjectStore
-    ├── local filesystem
-    ├── S3-compatible storage
-    └── cloud object storage
-
-Queue
-    ├── local implementation
-    ├── NATS
-    └── cloud queue services
-```
-
-Applications should depend on the capability they require rather than unnecessarily coupling themselves to a provider.
-
-### Bindings
-
-Bindings connect capabilities to their actual providers.
-
-Conceptually:
-
-```yaml
-bindings:
-  users:
-    capability: relational
-    provider: postgres
-
-  cache:
-    capability: kv
-    provider: redis
-
-  assets:
-    capability: object
-    provider: s3
-
-  events:
-    capability: queue
-    provider: nats
-```
-
-The exact configuration format and interfaces are part of Theatora's specification and tooling.
-
-### Modules
-
-Modules package reusable backend behavior.
-
-A module can consume capabilities while exposing higher-level application functionality.
-
-Examples include:
-
-```text
-Authentication
-Organizations
-Notifications
-Audit Log
-Billing
-Asset Library
-
-Cloud Save
-Inventory
-Economy
-Leaderboard
-Lobby
-Matchmaking
-```
-
-This creates a hierarchy such as:
-
-```text
-Provider
-    ↓
-Capability
-    ↓
-Module
-    ↓
-Application Backend
-```
-
-A leaderboard, for example, is not merely a database table. It is backend behavior that may use storage, caching, events, authorization, and other capabilities.
-
-### Runtimes
-
-Backend logic is not inherently tied to one execution environment.
-
-Theatora's model accommodates runtimes such as:
-
-```text
-local processes
-native executables
-containers
-WASM
-serverless functions
-edge runtimes
-clusters
-cloud infrastructure
-```
-
-Providers and runtimes can therefore evolve independently where their capability contracts permit it.
-
-## Backend Definition
-
-A Theatora backend can be described declaratively.
-
-Conceptually:
-
-```yaml
-name: example-app
-
-modules:
-  - identity
-  - users
-  - notifications
-
-bindings:
-  database:
-    capability: relational
-    provider: postgres
-
-  objects:
-    capability: object
-    provider: s3
-
-  events:
-    capability: queue
-    provider: nats
-
-runtime:
-  provider: container
-```
-
-The definition represents the **desired composition of the backend**, rather than merely a list of infrastructure resources.
-
-Tooling can use this definition for operations such as:
-
-```text
-create
-compose
-validate
-inspect
-diff
-deploy
-migrate
-upgrade
-```
-
-## Domain Backends
-
-Theatora's composition model is not restricted to conventional web applications.
-
-### Web and SaaS
-
-```text
-Identity
-Organization
-Database
-Object Storage
-Jobs
-Email
-Webhooks
-Billing
-Audit
-```
-
-### Realtime Applications
-
-```text
-Identity
-Realtime
-Presence
-Synchronization
-Coordination
-Events
-Queues
-Object Storage
-```
-
-### Games
-
-```text
-Player Identity
-Cloud Save
-Inventory
-Economy
-Leaderboard
-Lobby
-Matchmaking
-Game Sessions
-LiveOps
-```
-
-### Edge Applications
-
-```text
-Routing
-Edge Compute
-KV
-Object Storage
-Cache
-Queues
-Configuration
-Coordination
-Workflows
-```
-
-These are different backend compositions built from the same underlying model.
-
-## Local and Distributed Systems
-
-The logical backend and its physical deployment are separate concerns.
-
-A capability may be implemented differently depending on the environment:
-
-```text
-Development
-
-RelationalStore → SQLite
-ObjectStore     → local filesystem
-Queue           → local queue
-Compute         → local process
-```
-
-and elsewhere:
-
-```text
-Production
-
-RelationalStore → PostgreSQL
-ObjectStore     → S3-compatible storage
-Queue           → NATS
-Compute         → containers
-```
-
-More complex deployments can introduce replication, clustering, edge execution, managed services, or other infrastructure without redefining the application's backend solely in infrastructure terms.
-
-## Extensibility
-
-Theatora is designed around extension points rather than a closed catalogue of services.
-
-The model provides places for:
-
-* new capabilities
-* new providers
-* new domain modules
-* new runtimes
-* lifecycle hooks
-* configuration
-* policies
-* deployment integrations
-
-The ecosystem can therefore grow horizontally without requiring every backend capability to be implemented by the Theatora project itself.
-
-## The Idea
-
-Software development has accumulated excellent databases, object stores, queues, identity systems, runtimes, cloud services, edge platforms, and domain-specific backend components.
-
-The difficult part is often not the absence of these pieces.
-
-It is turning them into **one coherent backend for a particular application**.
-
-Theatora provides the theatre in which those pieces can work together.
-
-**Your application is the performance. Build the theatre it needs.**
+[MIT](LICENSE)
