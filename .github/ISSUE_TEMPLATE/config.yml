@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Use-case discussion
+    url: https://github.com/asopitech-labs/theatora/discussions
+    about: Share early ideas, backend compositions, providers, runtimes, and migration questions.
