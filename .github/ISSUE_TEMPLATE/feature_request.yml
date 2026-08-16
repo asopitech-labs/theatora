@@ -1,0 +1,42 @@
+name: Feature request
+description: Propose a capability, provider, runtime, module, or improvement for Theatora.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping shape Theatora. Early ideas and open questions are also welcome in Discussions.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or application use case
+      description: What are you trying to build, and what is difficult about the backend today?
+      placeholder: Describe the application, its audience, and its current backend.
+    validations:
+      required: true
+  - type: textarea
+    id: composition
+    attributes:
+      label: Required composition
+      description: Which modules, capabilities, providers, bindings, and runtimes are involved?
+      placeholder: Identity, relational data, objects, queues, local process, containers...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed capability or behavior
+      description: What should Theatora express, validate, compose, or operate?
+    validations:
+      required: true
+  - type: textarea
+    id: migration
+    attributes:
+      label: Data and migration considerations
+      description: What persisted data exists, and what must remain stable when the composition or topology changes?
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add examples, links, sketches, constraints, or alternatives.
