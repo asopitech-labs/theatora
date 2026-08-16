@@ -1,0 +1,41 @@
+name: Bug report
+description: Report behavior that does not match Theatora's intended model or contract.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: observed
+    attributes:
+      label: What happened?
+      description: Include the smallest backend definition or example that demonstrates the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: composition
+    attributes:
+      label: Composition
+      description: List the modules, capabilities, providers, bindings, and runtimes involved.
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: Data impact
+      description: Did this affect persisted data or a migration? Explain any recovery steps already taken.
+  - type: input
+    id: version
+    attributes:
+      label: Theatora version or commit
+      placeholder: Commit SHA, branch, or release
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, runtime, provider versions, and other relevant details.
