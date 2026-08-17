@@ -146,7 +146,7 @@ The same model can describe different backend compositions:
 
 Theatora is designed around extension points for new capabilities, providers, domain modules, runtimes, lifecycle hooks, policies, and deployment integrations.
 
-The current priority is to test the composition model against real backend requirements before locking down interfaces. Join the [first use-case discussion](https://github.com/asopitech-labs/theatora/discussions) or open an [issue](https://github.com/asopitech-labs/theatora/issues/new/choose).
+The current priority is to test the composition model against real backend requirements before locking down interfaces. Join the [first use-case discussion](https://github.com/asopitech-labs/theatora/discussions/1) or open an [issue](https://github.com/asopitech-labs/theatora/issues/new/choose).
 
 ## License
 
